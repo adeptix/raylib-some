@@ -87,7 +87,9 @@ func UpdateFunc() {
 	//drawSnowflake(rl.Vector2{X: float32(rl.GetScreenWidth()) / 2, Y: float32(rl.GetScreenHeight()) / 2}, optionLinesCount, lineLength, hsvColor, optionDepth)
 	drawSnowflakeV2(rl.Vector2{X: float32(rl.GetScreenWidth()) / 2, Y: float32(rl.GetScreenHeight()) / 2}, optionLinesCount, lineLength, hsvColor, optionDepth)
 
-	rl.DrawText(fmt.Sprintf("%d", drawCallsCount), int32(rl.GetScreenWidth()-60), 20, 16, rl.Blue)
+	const fontSize = 18
+	rl.DrawText(fmt.Sprintf("%d fps", rl.GetFPS()), int32(rl.GetScreenWidth()-100), 20+fontSize+20, fontSize, rl.DarkGreen)
+	rl.DrawText(fmt.Sprintf("%d draws", drawCallsCount), int32(rl.GetScreenWidth()-100), 20, fontSize, rl.Blue)
 
 	rl.EndDrawing()
 }
