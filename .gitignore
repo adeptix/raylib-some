@@ -5,3 +5,4 @@ Dockerfile
 localtest/
 Raylib-Go-Wasm/
 server_app
+_site/

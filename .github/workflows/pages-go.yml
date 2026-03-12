@@ -3,7 +3,7 @@ name: Deploy pages with golang and build.sh
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["master"]
+    branches: [ "master" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -31,8 +31,13 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Setup Go environment
         uses: actions/setup-go@v6.3.0
+        with:
+          go-version-file: 'go.mod'
+        # output must be in ./_site
       - name: Build pages with build.sh
-        run:  bash build.sh  # output must be in ./_site
+        run: |
+          chmod +x build.sh
+          ./build.sh
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
