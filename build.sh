@@ -7,20 +7,22 @@ WASM_LIB_DIR="Raylib-Go-Wasm"
 set -e
 
 if [ ! -e $MAIN_GO_FILE ]; then
-    echo "error: $WASM_LIB_DIR is required"
+    echo "error: $MAIN_GO_FILE is required"
     exit 1
 fi
 
 if [ ! -d $WASM_LIB_DIR ]; then
     echo "clone go wasm lib..."
-    git clone https://github.com/BrownNPC/Raylib-Go-Wasm.git
+    git clone https://github.com/BrownNPC/Raylib-Go-Wasm.git $WASM_LIB_DIR
+    cd $WASM_LIB_DIR
+    git checkout 27bc0271203c5039bbae9789b89d136c875b0976
+    cd ..
 fi
 
 cp go.mod temp_go.mod
 echo "replace github.com/gen2brain/raylib-go/raylib => ./$WASM_LIB_DIR/raylib" >> go.mod
-echo "require github.com/BrownNPC/wasm-ffi-go v1.2.0 // indirect" >> go.mod
 
-go mod download
+go mod tidy
 
 mkdir -p $OUT_DIR/rl
 
@@ -31,7 +33,7 @@ cp $WASM_LIB_DIR/index/index.js       $OUT_DIR/
 cp $WASM_LIB_DIR/index/wasm_exec.js   $OUT_DIR/
 
 echo "compile..."
-GOOS=js GOARCH=wasm go build -o $OUT_DIR/main.wasm wasm-main.go
+GOOS=js GOARCH=wasm go build -o $OUT_DIR/main.wasm .
 
 rm go.mod
 mv temp_go.mod go.mod
