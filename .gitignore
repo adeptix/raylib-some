@@ -3,3 +3,5 @@
 Dockerfile
 .env
 localtest/
+Raylib-Go-Wasm/
+server_app

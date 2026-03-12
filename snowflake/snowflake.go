@@ -1,4 +1,4 @@
-package main
+package snowflake
 
 import (
 	"fmt"
@@ -13,81 +13,83 @@ var (
 	optionRotateAng  = float64(math.Pi / 2)
 
 	drawCallsCount = 0
+
+	baseColor = rl.Red
+	hsvColor  = rl.ColorToHSV(baseColor)
 )
 
 //
 // 4 + 4*4 + 4*4*4 + 4*4*4*4
 
-func main() {
+func InitWindow() func() {
 	rl.InitWindow(800, 600, "snowflake")
 	rl.SetTargetFPS(60)
 
-	baseColor := rl.Red
-	hsvColor := rl.ColorToHSV(baseColor)
+	return func() {
+		rl.CloseWindow()
+	}
+}
 
+func UpdateFunc() {
 	const (
 		lineLength     = 150
 		rotateAngSpeed = math.Pi / 2
 	)
 
-	for !rl.WindowShouldClose() {
-		rl.ClearBackground(rl.White)
-		rl.BeginDrawing()
+	rl.ClearBackground(rl.White)
+	rl.BeginDrawing()
 
-		dt := rl.GetFrameTime()
+	dt := rl.GetFrameTime()
 
-		btnPos := rl.NewVector2(20, 20)
-		var btnRec rl.Rectangle
+	btnPos := rl.NewVector2(20, 20)
+	var btnRec rl.Rectangle
 
-		btnRec = createButton(btnPos, "- depth", func() {
-			if optionDepth > 1 {
-				optionDepth--
-			}
-		})
-		btnPos.X += btnRec.Width + 20
+	btnRec = createButton(btnPos, "- depth", func() {
+		if optionDepth > 1 {
+			optionDepth--
+		}
+	})
+	btnPos.X += btnRec.Width + 20
 
-		btnRec = createButton(btnPos, "+ depth", func() {
-			if optionDepth < 10 {
-				optionDepth++
-			}
-		})
-		btnPos.X += btnRec.Width + 20*2
+	btnRec = createButton(btnPos, "+ depth", func() {
+		if optionDepth < 10 {
+			optionDepth++
+		}
+	})
+	btnPos.X += btnRec.Width + 20*2
 
-		btnRec = createButton(btnPos, "- lines", func() {
-			if optionLinesCount > 1 {
-				optionLinesCount--
-			}
-		})
-		btnPos.X += btnRec.Width + 20
+	btnRec = createButton(btnPos, "- lines", func() {
+		if optionLinesCount > 1 {
+			optionLinesCount--
+		}
+	})
+	btnPos.X += btnRec.Width + 20
 
-		btnRec = createButton(btnPos, "+ lines", func() {
-			if optionLinesCount < 10 {
-				optionLinesCount++
-			}
-		})
-		btnPos.X += btnRec.Width + 20*2
+	btnRec = createButton(btnPos, "+ lines", func() {
+		if optionLinesCount < 10 {
+			optionLinesCount++
+		}
+	})
+	btnPos.X += btnRec.Width + 20*2
 
-		btnRec = createButton(btnPos, "- ang", func() {
-			optionRotateAng -= rotateAngSpeed * float64(dt)
-		}, true)
-		btnPos.X += btnRec.Width + 20
+	btnRec = createButton(btnPos, "- ang", func() {
+		optionRotateAng -= rotateAngSpeed * float64(dt)
+	}, true)
+	btnPos.X += btnRec.Width + 20
 
-		btnRec = createButton(btnPos, "+ ang", func() {
-			optionRotateAng += rotateAngSpeed * float64(dt)
-		}, true)
-		btnPos.X += btnRec.Width + 20*2
+	btnRec = createButton(btnPos, "+ ang", func() {
+		optionRotateAng += rotateAngSpeed * float64(dt)
+	}, true)
+	btnPos.X += btnRec.Width + 20*2
 
-		drawCallsCount = 0
+	drawCallsCount = 0
 
-		//drawSnowflake(rl.Vector2{X: float32(rl.GetScreenWidth()) / 2, Y: float32(rl.GetScreenHeight()) / 2}, optionLinesCount, lineLength, hsvColor, optionDepth)
-		drawSnowflakeV2(rl.Vector2{X: float32(rl.GetScreenWidth()) / 2, Y: float32(rl.GetScreenHeight()) / 2}, optionLinesCount, lineLength, hsvColor, optionDepth)
+	//drawSnowflake(rl.Vector2{X: float32(rl.GetScreenWidth()) / 2, Y: float32(rl.GetScreenHeight()) / 2}, optionLinesCount, lineLength, hsvColor, optionDepth)
+	drawSnowflakeV2(rl.Vector2{X: float32(rl.GetScreenWidth()) / 2, Y: float32(rl.GetScreenHeight()) / 2}, optionLinesCount, lineLength, hsvColor, optionDepth)
 
-		rl.DrawText(fmt.Sprintf("%d", drawCallsCount), int32(rl.GetScreenWidth()-60), 20, 16, rl.Blue)
+	rl.DrawText(fmt.Sprintf("%d", drawCallsCount), int32(rl.GetScreenWidth()-60), 20, 16, rl.Blue)
 
-		rl.EndDrawing()
-	}
-
-	rl.CloseWindow()
+	rl.EndDrawing()
 }
 
 func drawSnowflake(center rl.Vector2, linesCount int, lineLength float32, hsvColor rl.Vector3, depth int) {
