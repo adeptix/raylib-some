@@ -1,4 +1,4 @@
-//go:build !wasm
+//go:build wasm
 
 package main
 
@@ -11,6 +11,8 @@ import (
 func main() {
 	closeFunc := snowflake.InitWindow()
 	defer closeFunc()
+
+	rl.SetMainLoop(snowflake.UpdateFunc)
 
 	for !rl.WindowShouldClose() {
 		snowflake.UpdateFunc()
